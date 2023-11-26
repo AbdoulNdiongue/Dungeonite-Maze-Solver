@@ -1,8 +1,8 @@
 # game setup
-WIDTH    = 1280	
+WIDTH    = 1260	
 HEIGHT   = 720
 FPS      = 60
-TILESIZE = 64
+TILESIZE = 32
 
 WORLD_MAP = [
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
