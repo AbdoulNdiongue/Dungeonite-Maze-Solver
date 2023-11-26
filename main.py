@@ -17,15 +17,15 @@ def onAppStart(app):
         for col_index, val in enumerate(row):
 
             # setting x and y starting positions for each tile in the world map.
-            x = row_index * TILESIZE 
-            y = col_index * TILESIZE
+            x = col_index * TILESIZE 
+            y = row_index * TILESIZE
             if val == 'x':
                 app.obstaclePositions += [(x,y)]
             elif val == 'p':
                 app.playerPosition = (x,y)
 
     #Player
-    app.playerSpeed = 10
+    app.playerSpeed = 5
     app.directionX = 0
     app.directionY = 0
 
@@ -65,12 +65,10 @@ def isColliding(playerPosition, obstaclePositions):
     for obstaclePosition in obstaclePositions:
         obstacleX, obstacleY = obstaclePosition
         
-        #print(obstaclePosition)
-        #print(f"differenceX: {abs(obstacleX-playerX)}, differenceY:{abs(obstacleY-playerY)}")
-        if abs(obstacleX-playerX) <= TILESIZE and abs(obstacleY-playerY) <= TILESIZE:
+        if abs(obstacleX-playerX) < TILESIZE and abs(obstacleY-playerY) < TILESIZE:
                 return True
-        else:
-            return False
+        
+    return False
 
 def onStep(app):
 
@@ -88,10 +86,6 @@ def onStep(app):
     if isColliding(possiblePosition, app.obstaclePositions) == False:
         app.playerPosition = possiblePosition
         
-
-    
-    
-
 def redrawAll(app):
 
     for position in app.obstaclePositions:
