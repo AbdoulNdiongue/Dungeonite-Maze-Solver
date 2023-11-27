@@ -52,7 +52,9 @@ def onKeyRelease(app,key):
 def onStep(app):
 
     app.player.step(app.obstaclePositions)
-    
+    if app.obstaclePositions != None:
+        app.obstaclePositions = app.player.obstaclePositions
+
 def redrawAll(app):
     app.player.draw(app.playerImg)
     for obstaclePosition in app.obstaclePositions:

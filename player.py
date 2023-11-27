@@ -7,6 +7,7 @@ class Player():
         self.playerSpeed = 10
         self.directionX = 0
         self.directionY = 0
+        self.obstaclePositions = None
     
     def move(self,direction):
         if direction == 'right':
@@ -31,15 +32,16 @@ class Player():
             self.directionY = 0
         
     def step(self, obstaclePositions): #figure out how to make it so that the character doesnt move faster diagonally
+        possibleObstaclePositions = []
+        for obstaclePosition in obstaclePositions:
+            obstacleX, obstacleY = obstaclePosition
+            possibleObstacleX = obstacleX - self.directionX * self.playerSpeed
+            possibleObstacleY = obstacleY - self.directionY * self.playerSpeed
+            possibleObstaclePosition = possibleObstacleX, possibleObstacleY
+            possibleObstaclePositions.append(possibleObstaclePosition)
 
-        playerX, playerY = self.playerPosition
-        possiblePlayerX = playerX + self.directionX * self.playerSpeed
-        possiblePlayerY = playerY + self.directionY * self.playerSpeed
-        possiblePosition = possiblePlayerX,possiblePlayerY
-        
-
-        if isColliding(possiblePosition, obstaclePositions) == False:
-            self.playerPosition = possiblePosition
+        if isColliding(self.playerPosition, possibleObstaclePositions) == False: #obstaclePositions not returned.
+            self.obstaclePositions = possibleObstaclePositions
         
     def draw(self, playerImg):
         x,y = self.playerPosition
