@@ -1,13 +1,15 @@
 from cmu_graphics import *
 from settings import *
+from player import *
+from obstacles import *
 from PIL import Image
 
 def onAppStart(app):
     app.map = WORLD_MAP
 
     # Create the Images
-    app.player = Image.new('RGB', (TILESIZE, TILESIZE), (0,255,255))
-    app.obstacle = Image.new('RGB', (TILESIZE, TILESIZE), (255,0,255))
+    app.playerImg = Image.new('RGB', (TILESIZE, TILESIZE), (0,255,255))
+    app.obstacleImg = Image.new('RGB', (TILESIZE, TILESIZE), (255,0,255))
 
     #Find positions to draw the player and obstacles
     app.obstaclePositions = []
@@ -25,74 +27,24 @@ def onAppStart(app):
                 app.playerPosition = (x,y)
 
     #Player
-    app.playerSpeed = 5
-    app.directionX = 0
-    app.directionY = 0
+    app.player = Player(app.playerPosition)
 
-
-
-
+    #Obstacles 
+    app.obstacles = Obstacles(app.obstaclePositions)
 
 def onKeyPress(app,key):
-
-    #moves player once keys are pressed
-    if key == 'right':
-        app.directionX = 1
-    elif key == 'left':
-        app.directionX = -1
-    elif key == 'up':
-        app.directionY = -1
-    elif key == 'down':
-        app.directionY = 1
-
-def onKeyRelease(app,key):
-
-    #Stops player's movement once keys are released
-    if key == 'right':
-        app.directionX = 0
-    elif key == 'left':
-        app.directionX = 0   
-    elif key == 'up':
-        app.directionY = 0
-    elif key == 'down':
-        app.directionY = 0
+    app.player.move(key)
     
-#not working as intended. Appears to lock in just on obstacle, the top left, and uses that for reference. 
-def isColliding(playerPosition, obstaclePositions):
-
-    playerX, playerY = playerPosition
-    #print(obstaclePositions)
-    for obstaclePosition in obstaclePositions:
-        obstacleX, obstacleY = obstaclePosition
-        
-        if abs(obstacleX-playerX) < TILESIZE and abs(obstacleY-playerY) < TILESIZE:
-                return True
-        
-    return False
+def onKeyRelease(app,key):
+    app.player.stopMove(key)
 
 def onStep(app):
 
-    if app.directionX !=0:
-        pass #figure out how to make it so that the character doesnt move faster diagonally
+    app.player.step(app.obstaclePositions)
 
-    #Updates the player's position based on the direction its going
-    playerX, playerY = app.playerPosition
-    playerX += app.directionX * app.playerSpeed
-    playerY += app.directionY * app.playerSpeed
-    possiblePosition = playerX,playerY
-    
-    #collision Check 
-    print(app.obstaclePositions)
-    if isColliding(possiblePosition, app.obstaclePositions) == False:
-        app.playerPosition = possiblePosition
-        
 def redrawAll(app):
-
-    for position in app.obstaclePositions:
-        x,y = position
-        drawImage(CMUImage(app.obstacle),x,y)
-    x,y = app.playerPosition
-    drawImage(CMUImage(app.player),x,y)    
+    app.player.draw(app.playerImg)
+    app.obstacles.draw(app.obstacleImg)
 
 def main():
     runApp(width=WIDTH, height=HEIGHT)
