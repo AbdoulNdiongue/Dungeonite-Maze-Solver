@@ -12,25 +12,36 @@ def onAppStart(app):
     app.obstacleImg = Image.new('RGB', (TILESIZE, TILESIZE), (255,0,255))
 
     #Find positions to draw the player and obstacles
-    app.obstaclePositions = []
-    app.playerPosition = None
+    app.playerPosition = ((WIDTH//TILESIZE)*TILESIZE/2, (HEIGHT//TILESIZE)*TILESIZE/2) #places player in the middle of the screen 
+    app.relativeObstaclePos = set()
 
+    #save the relative positions of the obstacles and player from each other
     for row_index, row in enumerate(WORLD_MAP):
         for col_index, val in enumerate(row):
-
+        
             # setting x and y starting positions for each tile in the world map.
             x = col_index * TILESIZE 
             y = row_index * TILESIZE
+
             if val == 'x':
-                app.obstaclePositions += [(x,y)]
-            elif val == 'p':
-                app.playerPosition = (x,y)
+                app.relativeObstaclePos.add((x,y))
+            if val == 'p':
+                app.relativePlayerPos = (x,y)
+
+    #using their positions relative to the player, shift the obstacles
+    app.obstaclePositions = set()
+    app.differenceX = app.playerPosition[0] - app.relativePlayerPos[0]
+    app.differenceY = app.playerPosition[1] - app.relativePlayerPos[1]
+    
+    for pos in app.relativeObstaclePos:
+        x,y = pos
+        actualX = x + app.differenceX
+        actualY = y + app.differenceY
+
+        app.obstaclePositions.add((actualX,actualY))
 
     #Player
     app.player = Player(app.playerPosition)
-
-    #Obstacles 
-    app.obstacles = Obstacles(app.obstaclePositions)
 
 def onKeyPress(app,key):
     app.player.move(key)
@@ -41,10 +52,12 @@ def onKeyRelease(app,key):
 def onStep(app):
 
     app.player.step(app.obstaclePositions)
-
+    
 def redrawAll(app):
     app.player.draw(app.playerImg)
-    app.obstacles.draw(app.obstacleImg)
+    for obstaclePosition in app.obstaclePositions:
+        x,y = obstaclePosition
+        drawImage(CMUImage(app.obstacleImg),x,y)
 
 def main():
     runApp(width=WIDTH, height=HEIGHT)

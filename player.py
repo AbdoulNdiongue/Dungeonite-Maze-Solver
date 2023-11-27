@@ -30,16 +30,7 @@ class Player():
         elif direction == 'down' and self.directionY != -1:
             self.directionY = 0
         
-    def step(self, obstaclePositions): #figure out how to make it so that the character doesnt move faster diagonally
-
-        playerX, playerY = self.playerPosition
-        possiblePlayerX = playerX + self.directionX * self.playerSpeed
-        possiblePlayerY = playerY + self.directionY * self.playerSpeed
-        possiblePosition = possiblePlayerX,possiblePlayerY
-        
-
-        if isColliding(possiblePosition, obstaclePositions) == False:
-            self.playerPosition = possiblePosition
+    
         
     def draw(self, playerImg):
         x,y = self.playerPosition
