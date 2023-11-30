@@ -16,14 +16,15 @@ class Room():
                 # setting x and y starting positions for each tile in the world map.
                 x = col_index * TILESIZE 
                 y = row_index * TILESIZE
+                print(TILESIZE)
 
                 if val == 'x':
                     self.relativeObstaclePos.add((x,y))
                 elif val == 'p':
                     app.relativePlayerPos = (x,y)
-                elif self == '1':
+                elif val == '1':
                     self.puzzleThreshold1 = y
-                elif self == '2':
+                elif val == '2':
                     self.puzzleThreshold2 = x
 
         #using their positions relative to the player, shift the obstacles and puzzle thresholds
