@@ -32,6 +32,8 @@ class Player():
             self.directionY = 0
         
     def step(self, obstaclePositions): #figure out how to make it so that the character doesnt move faster diagonally
+        
+        #Moves the map, while the player stays centered, giving the illusion of a camera. 
         possibleObstaclePositions = []
         for obstaclePosition in obstaclePositions:
             obstacleX, obstacleY = obstaclePosition

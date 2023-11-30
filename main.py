@@ -5,8 +5,7 @@ from obstacles import *
 from PIL import Image
 
 def onAppStart(app):
-    app.map = WORLD_MAP
-
+    app.room = SPAWN_ROOM
     # Create the Images
     app.playerImg = Image.new('RGB', (TILESIZE, TILESIZE), (0,255,255))
     app.obstacleImg = Image.new('RGB', (TILESIZE, TILESIZE), (255,0,255))
@@ -16,7 +15,7 @@ def onAppStart(app):
     app.relativeObstaclePos = set()
 
     #save the relative positions of the obstacles and player from each other
-    for row_index, row in enumerate(WORLD_MAP):
+    for row_index, row in enumerate(app.room):
         for col_index, val in enumerate(row):
         
             # setting x and y starting positions for each tile in the world map.
