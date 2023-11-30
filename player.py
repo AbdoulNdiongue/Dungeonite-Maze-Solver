@@ -1,9 +1,9 @@
 from cmu_graphics import *
 from settings import *
-
+from main import *
+from room import * 
 class Player():
-    def __init__(self, playerPosition):
-        self.playerPosition = playerPosition
+    def __init__(self):
         self.playerSpeed = 10
         self.directionX = 0
         self.directionY = 0
@@ -42,11 +42,17 @@ class Player():
             possibleObstaclePosition = possibleObstacleX, possibleObstacleY
             possibleObstaclePositions.append(possibleObstaclePosition)
 
-        if isColliding(self.playerPosition, possibleObstaclePositions) == False: #obstaclePositions not returned.
-            self.obstaclePositions = possibleObstaclePositions
+        if isColliding(app.playerPosition, possibleObstaclePositions) == False: #obstaclePositions not returned.
+            if app.room.obstaclePositions != None:
+                app.room.obstaclePositions = possibleObstaclePositions
+            app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
+            app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
         
+        if app.room.puzzleThreshold1 >= app.playerPosition[1] or app.room.puzzleThreshold2 <= app.playerPosition[0]:
+            app.mode = 'puzzle'
+            
     def draw(self, playerImg):
-        x,y = self.playerPosition
+        x,y = app.playerPosition
         drawImage(CMUImage(playerImg),x,y)
 
 def isColliding(playerPosition, obstaclePositions):
