@@ -45,4 +45,4 @@ class Room():
         for obstaclePosition in self.obstaclePositions:
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
-        app.player.step(self.obstaclePositions)
+        

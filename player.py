@@ -25,7 +25,6 @@ class Player():
             self.directionX = 0
         elif direction == 'left' and self.directionX != 1:
             self.directionX = 0
-
         if direction == 'up' and self.directionY != 1:
             self.directionY = 0
         elif direction == 'down' and self.directionY != -1:
@@ -47,6 +46,7 @@ class Player():
                 app.room.obstaclePositions = possibleObstaclePositions
             app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
             app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
+            print(app.room.puzzleThreshold1,  app.room.puzzleThreshold2)
         
         if app.room.puzzleThreshold1 >= app.playerPosition[1] or app.room.puzzleThreshold2 <= app.playerPosition[0]:
             app.mode = 'puzzle'
