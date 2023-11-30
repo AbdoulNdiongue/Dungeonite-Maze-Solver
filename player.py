@@ -48,7 +48,13 @@ class Player():
             app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
             print(app.room.puzzleThreshold1,  app.room.puzzleThreshold2)
         
-        if app.room.puzzleThreshold1 >= app.playerPosition[1] or app.room.puzzleThreshold2 <= app.playerPosition[0]:
+        if app.room.puzzleThreshold1 >= app.playerPosition[1]:
+            app.room = Room(PUZZLE_ONE)
+            app.room.roomSetup()
+            app.mode = 'puzzle'
+        elif app.room.puzzleThreshold2 <= app.playerPosition[0]:
+            app.room = Room(PUZZLE_TWO)
+            app.room.roomSetup()
             app.mode = 'puzzle'
             
     def draw(self, playerImg):
