@@ -16,24 +16,40 @@ class Room():
                 # setting x and y starting positions for each tile in the world map.
                 x = col_index * TILESIZE 
                 y = row_index * TILESIZE
-                print(TILESIZE)
 
                 if val == 'x':
                     self.relativeObstaclePos.add((x,y))
                 elif val == 'p':
                     app.relativePlayerPos = (x,y)
                 elif val == '1':
-                    self.puzzleThreshold1 = y
+                    if app.mode == 'spawn' or app.mode == 'puzzle1':
+                        self.puzzleThreshold1 = y
+                    elif app.mode == 'puzzle2':
+                        self.puzzleThreshold1 = x
                 elif val == '2':
-                    self.puzzleThreshold2 = x
+                    if app.mode == 'spawn' or app.mode == 'puzzle1':
+                        self.puzzleThreshold2 = x
+                    elif app.mode == 'puzzle2':
+                        self.puzzleThreshold2 = y
 
         #using their positions relative to the player, shift the obstacles and puzzle thresholds
         self.obstaclePositions = set()
         self.differenceX = app.playerPosition[0] - app.relativePlayerPos[0]
         self.differenceY = app.playerPosition[1] - app.relativePlayerPos[1]
-        self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceY 
-        self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX + TILESIZE
 
+        if app.mode == 'spawn':
+            self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceY 
+            self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX 
+
+        elif app.mode == 'puzzle1':
+            self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceY 
+            self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX
+            
+
+        elif app.mode == 'puzzle2':
+            self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceX  
+            self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceY 
+        
         for pos in self.relativeObstaclePos:
             x,y = pos
             actualX = x + self.differenceX
@@ -45,4 +61,19 @@ class Room():
         for obstaclePosition in self.obstaclePositions:
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
+
+    '''def createMaze(currCell, visited):
+        visited.add(currCell)
+        nextCells = []
+        nextCells.append((currCell[0] + 1, currCell[1] + 1))
+        nextCells.append((currCell[0] + 1, currCell[1] - 1))
+        nextCells.append((currCell[0] - 1, currCell[1] + 1))
+        nextCells.append((currCell[0] - 1, currCell[1] - 1))
         
+        randomIndex = random(len(nextCells)):
+        if randomCell[randomIndex]  in visited:
+            return None
+        else:
+            createMaze(randomCell[randomIndex], visited)'''
+            
+

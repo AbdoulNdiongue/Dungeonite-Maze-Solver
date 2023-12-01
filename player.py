@@ -44,18 +44,54 @@ class Player():
         if isColliding(app.playerPosition, possibleObstaclePositions) == False: #obstaclePositions not returned.
             if app.room.obstaclePositions != None:
                 app.room.obstaclePositions = possibleObstaclePositions
-            app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
-            app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
-            print(app.room.puzzleThreshold1,  app.room.puzzleThreshold2)
+
+            #Room Movement
+            #print(app.room.puzzleThreshold1,  app.room.puzzleThreshold2)
         
-        if app.room.puzzleThreshold1 >= app.playerPosition[1]:
-            app.room = Room(PUZZLE_ONE)
-            app.room.roomSetup()
-            app.mode = 'puzzle'
-        elif app.room.puzzleThreshold2 <= app.playerPosition[0]:
-            app.room = Room(PUZZLE_TWO)
-            app.room.roomSetup()
-            app.mode = 'puzzle'
+            if app.mode == 'spawn':
+
+                app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
+                app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
+                if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed :
+                    app.room = Room(PUZZLE_ONE)
+                    app.room.roomSetup()
+                    app.mode = 'puzzle1'
+
+                elif abs(app.room.puzzleThreshold2 - app.playerPosition[0]) < self.playerSpeed:
+                    app.room = Room(PUZZLE_TWO)
+                    app.room.roomSetup()
+                    app.mode = 'puzzle2'
+                    
+                    
+            if app.mode == 'puzzle1':
+
+                app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
+                app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
+                if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed:
+                    app.room = Room(SPAWN_ROOM)
+                    app.mode = 'spawn'
+                    app.room.roomSetup()
+
+                elif abs(app.room.puzzleThreshold2 - app.playerPosition[0]) < self.playerSpeed:
+                    app.room = Room(END_ROOM)
+                    app.mode = 'end'
+                    app.room.roomSetup()
+
+            
+            if app.mode == 'puzzle2':
+
+                app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionX * self.playerSpeed
+                app.room.puzzleThreshold2 = app.room.puzzleThreshold2 + self.directionY * self.playerSpeed
+                if abs(app.room.puzzleThreshold1 - app.playerPosition[0]) < self.playerSpeed:
+                    app.room = Room(SPAWN_ROOM)
+                    app.mode = 'spawn'
+                    app.room.roomSetup()
+
+                elif abs(app.room.puzzleThreshold2 - app.playerPosition[1]) < self.playerSpeed:
+                    app.room = Room(END_ROOM)
+                    app.mode = 'end'
+                    app.room.roomSetup()
+                    
             
     def draw(self, playerImg):
         x,y = app.playerPosition
