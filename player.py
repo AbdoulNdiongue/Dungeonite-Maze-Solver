@@ -47,51 +47,67 @@ class Player():
 
             #Room Movement
             #print(app.room.puzzleThreshold1,  app.room.puzzleThreshold2)
-        
+            
             if app.mode == 'spawn':
 
                 app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
                 app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed :
                     app.room = Room(PUZZLE_ONE)
-                    app.room.roomSetup()
                     app.mode = 'puzzle1'
+                    app.room.roomSetup()
+                    
 
                 elif abs(app.room.puzzleThreshold2 - app.playerPosition[0]) < self.playerSpeed:
                     app.room = Room(PUZZLE_TWO)
-                    app.room.roomSetup()
                     app.mode = 'puzzle2'
+                    app.room.roomSetup()
+                    
                     
                     
             if app.mode == 'puzzle1':
-
+                #print(app.room.keyX, app.room.keyY)
                 app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionY * self.playerSpeed
                 app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionX * self.playerSpeed
+                app.room.keyX = app.room.keyX - self.directionX * self.playerSpeed
+                app.room.keyY = app.room.keyY - self.directionY * self.playerSpeed
+
+                if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
+                    app.keys.add('key1')
+
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
                     app.mode = 'spawn'
                     app.room.roomSetup()
 
-                elif abs(app.room.puzzleThreshold2 - app.playerPosition[0]) < self.playerSpeed:
+                elif abs(app.room.puzzleThreshold2 - app.playerPosition[0]) < self.playerSpeed and app.keys == {'key1','key2'}:
                     app.room = Room(END_ROOM)
                     app.mode = 'end'
                     app.room.roomSetup()
+                
+                
 
-            
             if app.mode == 'puzzle2':
 
                 app.room.puzzleThreshold1 = app.room.puzzleThreshold1 - self.directionX * self.playerSpeed
-                app.room.puzzleThreshold2 = app.room.puzzleThreshold2 + self.directionY * self.playerSpeed
+                app.room.puzzleThreshold2 = app.room.puzzleThreshold2 - self.directionY * self.playerSpeed
+                app.room.keyX = app.room.keyX - self.directionX * self.playerSpeed
+                app.room.keyY = app.room.keyY - self.directionY * self.playerSpeed
+
+                if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
+                    app.keys.add('key2')
+
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[0]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
                     app.mode = 'spawn'
                     app.room.roomSetup()
 
-                elif abs(app.room.puzzleThreshold2 - app.playerPosition[1]) < self.playerSpeed:
+                elif abs(app.room.puzzleThreshold2 - app.playerPosition[1]) < self.playerSpeed and app.keys == {'key1','key2'}:
                     app.room = Room(END_ROOM)
                     app.mode = 'end'
                     app.room.roomSetup()
-                    
+                
+                
             
     def draw(self, playerImg):
         x,y = app.playerPosition
