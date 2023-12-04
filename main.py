@@ -13,7 +13,8 @@ def onAppStart(app):
     app.playerImg = Image.new('RGB', (TILESIZE, TILESIZE), (0,255,255))
     app.obstacleImg = Image.new('RGB', (TILESIZE, TILESIZE), (255,0,255))
     app.keyImg = Image.new('RGB', (TILESIZE, TILESIZE), (255,255,0))
-    app.doorImg = Image.new('RGB', (TILESIZE, TILESIZE), (0,0,0))
+    app.mazeImg = Image.new('RGB', (TILESIZE, TILESIZE), (0,0,0))
+
     #Find positions to draw the player and obstacles
     app.playerPosition = ((WIDTH//TILESIZE)*TILESIZE/2, (HEIGHT//TILESIZE)*TILESIZE/2) #places player in the middle of the screen 
 
@@ -30,7 +31,7 @@ def onKeyRelease(app,key):
 
 def onStep(app):
     app.player.step(app.room.obstaclePositions)
-    print(app.mode, app.keys)
+    #print(app.mode, app.keys)
 
 def redrawAll(app):
     app.room.draw(app.obstacleImg)

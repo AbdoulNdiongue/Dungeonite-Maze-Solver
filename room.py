@@ -1,6 +1,7 @@
 from cmu_graphics import *
 from main import *
 from settings import *
+import random
 
 class Room():
     def __init__(self, layout):
@@ -9,7 +10,13 @@ class Room():
     def roomSetup(self):
         self.relativeObstaclePos = set()
 
+        if app.mode == 'puzzle1':
+            visited = set()
+            currCell = (1,1)
+            self.createMaze(currCell, visited)
+
         #save the relative positions of the obstacles and player from each other
+        #print(self.layout)
         for row_index, row in enumerate(self.layout):
             for col_index, val in enumerate(row):
             
@@ -49,6 +56,7 @@ class Room():
                     self.keyX = x
                     self.keyY = y
                     
+                    
 
         #using their positions relative to the player, shift the obstacles and puzzle thresholds
         self.obstaclePositions = set()
@@ -64,6 +72,9 @@ class Room():
             self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX
             self.keyX = self.keyX + self.differenceX
             self.keyY = self.keyY + self.differenceY
+            visited = set()
+            currCell = (1,1)
+            self.createMaze(currCell, visited)
 
         elif app.mode == 'puzzle2':
             self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceX  
@@ -89,19 +100,39 @@ class Room():
             drawImage(CMUImage(obstacleImg),x,y)
         
         
-
-    '''def createMaze(currCell, visited):
+    def drawMaze(self):
+        pass
+    
+    def createMaze(self,currCell, visited):
         visited.add(currCell)
-        nextCells = []
-        nextCells.append((currCell[0] + 1, currCell[1] + 1))
-        nextCells.append((currCell[0] + 1, currCell[1] - 1))
-        nextCells.append((currCell[0] - 1, currCell[1] + 1))
-        nextCells.append((currCell[0] - 1, currCell[1] - 1))
-        
-        randomIndex = random(len(nextCells)):
-        if randomCell[randomIndex]  in visited:
-            return None
-        else:
-            createMaze(randomCell[randomIndex], visited)'''
-            
 
+        nextCells = []
+        nextCells.append((currCell[0] + 1, currCell[1]))
+        nextCells.append((currCell[0], currCell[1] + 1))
+        nextCells.append((currCell[0] - 1, currCell[1]))
+        nextCells.append((currCell[0], currCell[1] - 1))
+
+        print(nextCells)
+
+        randomizedNextCells = []
+        while len(nextCells) > 0:
+            randomIndex = random.choice(range(len(nextCells)))
+            randomizedNextCells.append(nextCells[randomIndex])
+            nextCells.pop(randomIndex)
+
+        #print(randomizedNextCells)
+
+        for cell in randomizedNextCells:
+            x,y = cell
+            if cell in visited or x < 0 or y < 0 or self.layout[x][y] != ' ':
+                pass
+            
+            else:
+                #print(cell)
+    
+                self.layout[x][y] = 'x'
+                maze = self.createMaze(cell, visited)
+                #print(maze)
+                if maze != None:
+                    return maze
+        return None
