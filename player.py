@@ -32,6 +32,23 @@ class Player():
         
     def step(self, obstaclePositions): #figure out how to make it so that the character doesnt move faster diagonally
         
+        #changing animation
+        if self.directionX == 1:
+            for frame in range(4):
+                app.playerImg = Image.open(f"graphics/player/right/right_{frame}.png")
+
+        elif self.directionX == -1:
+            for frame in range(4):
+                app.playerImg = Image.open(f"graphics/player/left/left_{frame}.png")
+
+        elif self.directionY == -1:
+            for frame in range(4):
+                app.playerImg = Image.open(f"graphics/player/up/up_{frame}.png")
+
+        elif self.directionY == 1:
+            for frame in range(4):
+                app.playerImg = Image.open(f"graphics/player/down/down_{frame}.png")
+            
         #Moves the map, while the player stays centered, giving the illusion of a camera. 
         possibleObstaclePositions = []
         for obstaclePosition in obstaclePositions:
@@ -74,6 +91,7 @@ class Player():
 
                 if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
                     app.keys.add('key1')
+                    app.room.showKey == False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
@@ -96,6 +114,7 @@ class Player():
 
                 if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
                     app.keys.add('key2')
+                    app.room.showKey == False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[0]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
@@ -110,8 +129,17 @@ class Player():
                 
             
     def draw(self, playerImg):
+        if app.mode == 'puzzle1' or app.mode == 'puzzle2':
+            app.room.drawKey()
+            
         x,y = app.playerPosition
         drawImage(CMUImage(playerImg),x,y)
+
+        
+
+        if len(app.keys) > 0:
+            drawImage(CMUImage(app.keyImg),100,100)
+            drawLabel(f'x{len(app.keys)}', 175,120, size = 40, fill = 'white')
 
 def isColliding(playerPosition, obstaclePositions):
     playerX, playerY = playerPosition

@@ -2,18 +2,20 @@ from cmu_graphics import *
 from main import *
 from settings import *
 import random
+from PIL import Image
 
 class Room():
     def __init__(self, layout):
         self.layout = layout
-    
+        self.showKey = True
+
     def roomSetup(self):
         self.relativeObstaclePos = set()
 
-        if app.mode == 'puzzle1':
+        '''if app.mode == 'puzzle1':
             visited = set()
             currCell = (1,1)
-            self.createMaze(currCell, visited)
+            self.createMaze(currCell, visited)'''
 
         #save the relative positions of the obstacles and player from each other
         #print(self.layout)
@@ -72,10 +74,7 @@ class Room():
             self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX
             self.keyX = self.keyX + self.differenceX
             self.keyY = self.keyY + self.differenceY
-            visited = set()
-            currCell = (1,1)
-            self.createMaze(currCell, visited)
-
+    
         elif app.mode == 'puzzle2':
             self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceX  
             self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceY 
@@ -90,16 +89,15 @@ class Room():
             self.obstaclePositions.add((actualX,actualY))
 
     def draw(self, obstacleImg):
-
-        if app.mode == 'puzzle1' or app.mode == 'puzzle2':
-            drawImage(CMUImage(app.keyImg),self.keyX,self.keyY)
-            
         
         for obstaclePosition in self.obstaclePositions:
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
         
-        
+    def drawKey(self):
+        if self.showKey:
+            drawImage(CMUImage(app.keyImg),self.keyX,self.keyY)
+
     def drawMaze(self):
         pass
     
