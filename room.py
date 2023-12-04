@@ -93,11 +93,7 @@ class Room():
         for obstaclePosition in self.obstaclePositions:
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
-        
-    def drawKey(self):
-        if self.showKey:
-            drawImage(CMUImage(app.keyImg),self.keyX,self.keyY)
-
+            
     def drawMaze(self):
         pass
     

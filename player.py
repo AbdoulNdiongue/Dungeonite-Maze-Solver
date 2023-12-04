@@ -130,8 +130,9 @@ class Player():
             
     def draw(self, playerImg):
         if app.mode == 'puzzle1' or app.mode == 'puzzle2':
-            app.room.drawKey()
-            
+            if app.room.showKey:
+                drawImage(CMUImage(app.keyImg),app.room.keyX,app.room.keyY)
+
         x,y = app.playerPosition
         drawImage(CMUImage(playerImg),x,y)
 
