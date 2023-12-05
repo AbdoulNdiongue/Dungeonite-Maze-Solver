@@ -12,11 +12,23 @@ class Room():
     def roomSetup(self):
         self.relativeObstaclePos = set()
 
-        '''if app.mode == 'puzzle1':
+        if app.mode == 'puzzle1':
             visited = set()
-            currCell = (1,1)
-            self.createMaze(currCell, visited)'''
+            currCell = (11,9)
+            end = (6,18)
+            self.createMaze(currCell, visited, end)
+            x = random.choice(range(1,11))
+            y = random.choice(range(1,18))
+            self.layout[x][y] = 'k'
 
+        elif app.mode == 'puzzle2':
+            visited = set()
+            currCell = (1,6)
+            end = (1,9)
+            self.createMaze(currCell, visited, end)
+            x = random.choice(range(1,11))
+            y = random.choice(range(1,18))
+            self.layout[x][y] = 'k'
         #save the relative positions of the obstacles and player from each other
         #print(self.layout)
         for row_index, row in enumerate(self.layout):
@@ -33,6 +45,7 @@ class Room():
 
                 elif val == 'p':
                     app.relativePlayerPos = (x,y)
+                    #print(x/TILESIZE,y/TILESIZE)
 
                 elif val == '1':
                     if app.mode == 'spawn':
@@ -53,13 +66,11 @@ class Room():
 
                     elif app.mode == 'puzzle2':
                         self.puzzleThreshold2 = y
-
+                
                 elif val == 'k':
                     self.keyX = x
                     self.keyY = y
-                    
-                    
-
+        
         #using their positions relative to the player, shift the obstacles and puzzle thresholds
         self.obstaclePositions = set()
         self.differenceX = app.playerPosition[0] - app.relativePlayerPos[0]
@@ -72,6 +83,7 @@ class Room():
         elif app.mode == 'puzzle1':
             self.puzzleThreshold1 = self.puzzleThreshold1 + self.differenceY 
             self.puzzleThreshold2 = self.puzzleThreshold2 + self.differenceX
+    
             self.keyX = self.keyX + self.differenceX
             self.keyY = self.keyY + self.differenceY
     
@@ -93,20 +105,18 @@ class Room():
         for obstaclePosition in self.obstaclePositions:
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
-            
-    def drawMaze(self):
-        pass
     
-    def createMaze(self,currCell, visited):
+    def createMaze(self,currCell, visited, end):
         visited.add(currCell)
+        x1,y1 = currCell
 
         nextCells = []
-        nextCells.append((currCell[0] + 1, currCell[1]))
-        nextCells.append((currCell[0], currCell[1] + 1))
-        nextCells.append((currCell[0] - 1, currCell[1]))
-        nextCells.append((currCell[0], currCell[1] - 1))
+        nextCells.append((x1 + 1, y1))
+        nextCells.append((x1, y1 + 1))
+        nextCells.append((x1 - 1, y1))
+        nextCells.append((x1, y1 - 1))
 
-        print(nextCells)
+        #print(f"next:{nextCells}")
 
         randomizedNextCells = []
         while len(nextCells) > 0:
@@ -114,19 +124,39 @@ class Room():
             randomizedNextCells.append(nextCells[randomIndex])
             nextCells.pop(randomIndex)
 
-        #print(randomizedNextCells)
+        #print(f"random:{randomizedNextCells}")
 
         for cell in randomizedNextCells:
             x,y = cell
-            if cell in visited or x < 0 or y < 0 or self.layout[x][y] != ' ':
-                pass
+            
+            if cell in visited or x < 0 or y < 0  or x >= len(self.layout)-1 or y >= len(self.layout[0])-1 or self.layout[x][y] != ' ' or currCell == end:
+                continue
             
             else:
-                #print(cell)
-    
-                self.layout[x][y] = 'x'
-                maze = self.createMaze(cell, visited)
+                #print(currCell,cell)
+                if x1-x != 0:
+                    if y1+1 < len(self.layout[0]) and y1-1 >= 0:
+                        if (x1,y1+1) not in visited:
+                            self.layout[x1][y1+1] = 'x'
+                        if (x1,y1-1) not in visited:
+                            self.layout[x1][y1-1] = 'x'
+                        
+                    
+                elif y1-y != 0:
+                    if x1+1 < len(self.layout) and x1-1 >= 0:
+                        if (x1+1,y1) not in visited:
+                            self.layout[x1+1][y1] = 'x'
+                        if (x1-1,y1) not in visited:
+                            self.layout[x1-1][y1] = 'x'
+                        
+                        
+                
+                
+                maze = self.createMaze(cell, visited, end)
                 #print(maze)
                 if maze != None:
                     return maze
+            
+        #visited.remove(currCell)
+            
         return None

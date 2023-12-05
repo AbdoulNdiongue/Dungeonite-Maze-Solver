@@ -43,7 +43,7 @@ def redrawAll(app):
     
 
 def main():
-    runApp(width=WIDTH, height=HEIGHT)
+     runApp(width=WIDTH, height=HEIGHT)
 
 if __name__ == '__main__':
     main()

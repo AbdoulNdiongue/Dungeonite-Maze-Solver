@@ -89,12 +89,15 @@ class Player():
                 app.room.keyX = app.room.keyX - self.directionX * self.playerSpeed
                 app.room.keyY = app.room.keyY - self.directionY * self.playerSpeed
 
-                if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
+                if abs(app.room.keyX - app.playerPosition[0]) <= self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) <= self.playerSpeed:
                     app.keys.add('key1')
                     app.room.showKey == False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
+                    app.room.layout[8][10] = ' '
+                    app.room.layout[8][18] = ' '
+                    app.room.layout[1][10] = 'p'
                     app.mode = 'spawn'
                     app.room.roomSetup()
 
@@ -112,12 +115,13 @@ class Player():
                 app.room.keyX = app.room.keyX - self.directionX * self.playerSpeed
                 app.room.keyY = app.room.keyY - self.directionY * self.playerSpeed
 
-                if abs(app.room.keyX - app.playerPosition[0]) < self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) < self.playerSpeed:
+                if abs(app.room.keyX - app.playerPosition[0]) <= self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) <= self.playerSpeed:
                     app.keys.add('key2')
                     app.room.showKey == False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[0]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
+                    app.room.layout[8][18] = 'p'
                     app.mode = 'spawn'
                     app.room.roomSetup()
 
@@ -148,6 +152,6 @@ def isColliding(playerPosition, obstaclePositions):
     for obstaclePosition in obstaclePositions:
         obstacleX, obstacleY = obstaclePosition
         
-        if abs(obstacleX-playerX) < TILESIZE and abs(obstacleY-playerY) < TILESIZE:
+        if abs(obstacleX-playerX) < TILESIZE*90/100 and abs(obstacleY-playerY) < TILESIZE*90/100:
             return True
     return False
