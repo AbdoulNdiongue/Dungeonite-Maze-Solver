@@ -143,8 +143,8 @@ class Player():
         
 
         if len(app.keys) > 0:
-            drawImage(CMUImage(app.keyImg),100,100)
-            drawLabel(f'x{len(app.keys)}', 175,120, size = 40, fill = 'white')
+            drawImage(CMUImage(app.keyImg),75,100)
+            drawLabel(f'x{len(app.keys)}', 150,120, size = 40, fill = 'white')
 
 def isColliding(playerPosition, obstaclePositions):
     playerX, playerY = playerPosition
@@ -152,6 +152,6 @@ def isColliding(playerPosition, obstaclePositions):
     for obstaclePosition in obstaclePositions:
         obstacleX, obstacleY = obstaclePosition
         
-        if abs(obstacleX-playerX) < TILESIZE*90/100 and abs(obstacleY-playerY) < TILESIZE*90/100:
+        if abs(obstacleX-playerX) < TILESIZE*80/100 and abs(obstacleY-playerY) < TILESIZE*80/100:
             return True
     return False

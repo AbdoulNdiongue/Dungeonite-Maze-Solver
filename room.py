@@ -21,10 +21,11 @@ class Room():
             y = random.choice(range(1,18))
             self.layout[x][y] = 'k'
 
+
         elif app.mode == 'puzzle2':
             visited = set()
             currCell = (1,6)
-            end = (1,9)
+            end = (9,1)
             self.createMaze(currCell, visited, end)
             x = random.choice(range(1,11))
             y = random.choice(range(1,18))
@@ -135,7 +136,8 @@ class Room():
             else:
                 #print(currCell,cell)
                 if x1-x != 0:
-                    if y1+1 < len(self.layout[0]) and y1-1 >= 0:
+                    if y1+1 < len(self.layout[0])-2 and y1-1 > 0:
+                        print(x1,y1)
                         if (x1,y1+1) not in visited:
                             self.layout[x1][y1+1] = 'x'
                         if (x1,y1-1) not in visited:
@@ -143,7 +145,7 @@ class Room():
                         
                     
                 elif y1-y != 0:
-                    if x1+1 < len(self.layout) and x1-1 >= 0:
+                    if x1+1 < len(self.layout)-2 and x1-1 > 0:
                         if (x1+1,y1) not in visited:
                             self.layout[x1+1][y1] = 'x'
                         if (x1-1,y1) not in visited:
