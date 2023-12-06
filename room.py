@@ -3,10 +3,12 @@ from main import *
 from settings import *
 import random
 from PIL import Image
+import copy
 
 class Room():
     def __init__(self, layout):
         self.layout = layout
+        self.maze = copy.deepcopy(self.layout)
         self.showKey = True
 
     def roomSetup(self):
@@ -16,23 +18,41 @@ class Room():
             visited = set()
             currCell = (11,9)
             end = (6,18)
-            self.createMaze(currCell, visited, end)
+            self.createMaze(currCell, visited)
+            visited = set()
+            self.hasSolution = self.solutionDFS(currCell, visited, end)
+
+            while self.hasSolution == False: 
+                visited = set()
+                self.createMaze(currCell, visited)
+
             x = random.choice(range(1,11))
             y = random.choice(range(1,18))
-            self.layout[x][y] = 'k'
-
+            self.maze[x][y] = 'k'                
 
         elif app.mode == 'puzzle2':
             visited = set()
             currCell = (1,6)
             end = (9,1)
-            self.createMaze(currCell, visited, end)
+            self.createMaze(currCell, visited)
+            visited = set()
+            self.hasSolution = self.solutionDFS(currCell, visited, end)
+            
+            while self.hasSolution == False: 
+                visited = set()
+                self.createMaze(currCell, visited)
+
             x = random.choice(range(1,11))
             y = random.choice(range(1,18))
-            self.layout[x][y] = 'k'
+            self.maze[x][y] = 'k'
+
+            
+                
+            
         #save the relative positions of the obstacles and player from each other
         #print(self.layout)
-        for row_index, row in enumerate(self.layout):
+
+        for row_index, row in enumerate(self.maze):
             for col_index, val in enumerate(row):
             
                 # setting x and y starting positions for each tile in the world map.
@@ -107,7 +127,7 @@ class Room():
             x,y = obstaclePosition
             drawImage(CMUImage(obstacleImg),x,y)
     
-    def createMaze(self,currCell, visited, end):
+    def createMaze(self,currCell, visited):
         visited.add(currCell)
         x1,y1 = currCell
 
@@ -130,35 +150,71 @@ class Room():
         for cell in randomizedNextCells:
             x,y = cell
             
-            if cell in visited or x < 0 or y < 0  or x >= len(self.layout)-1 or y >= len(self.layout[0])-1 or self.layout[x][y] != ' ' or currCell == end:
+            if cell in visited or x < 0 or y < 0  or x >= len(self.maze)-1 or y >= len(self.maze[0])-1 or self.maze[x][y] != ' ':
                 continue
             
             else:
                 #print(currCell,cell)
                 if x1-x != 0:
-                    if y1+1 < len(self.layout[0])-2 and y1-1 > 0:
+                    if y1+1 < len(self.maze[0])-2 and y1-1 > 0:
                         #print(x1,y1)
                         if (x1,y1+1) not in visited:
-                            self.layout[x1][y1+1] = 'x'
+                            self.maze[x1][y1+1] = 'x'
                         if (x1,y1-1) not in visited:
-                            self.layout[x1][y1-1] = 'x'
+                            self.maze[x1][y1-1] = 'x'
                         
                     
                 elif y1-y != 0:
-                    if x1+1 < len(self.layout)-2 and x1-1 > 0:
+                    if x1+1 < len(self.maze)-2 and x1-1 > 0:
                         if (x1+1,y1) not in visited:
-                            self.layout[x1+1][y1] = 'x'
+                            self.maze[x1+1][y1] = 'x'
                         if (x1-1,y1) not in visited:
-                            self.layout[x1-1][y1] = 'x'
+                            self.maze[x1-1][y1] = 'x'
                         
                         
                 
                 
-                maze = self.createMaze(cell, visited, end)
+                newMaze = self.createMaze(cell, visited)
                 #print(maze)
-                if maze != None:
-                    return maze
+                if newMaze != None:
+                    return newMaze
             
         #visited.remove(currCell)
             
+        return None
+    
+    def solutionDFS(self, currCell, visited, end):
+        visited.add(currCell)
+        x1,y1 = currCell
+
+        nextCells = []
+        nextCells.append((x1 + 1, y1))
+        nextCells.append((x1, y1 + 1))
+        nextCells.append((x1 - 1, y1))
+        nextCells.append((x1, y1 - 1))
+
+        #print(f"next:{nextCells}")
+
+        randomizedNextCells = []
+        while len(nextCells) > 0:
+            randomIndex = random.choice(range(len(nextCells)))
+            randomizedNextCells.append(nextCells[randomIndex])
+            nextCells.pop(randomIndex)
+
+        #print(f"random:{randomizedNextCells}")
+
+        for cell in randomizedNextCells:
+            x,y = cell
+            
+            if cell in visited or x < 0 or y < 0  or x >= len(self.maze)-1 or y >= len(self.maze[0])-1 or self.maze[x][y] == 'x':
+                continue
+            
+            elif currCell == end:
+                return True
+            
+            else:
+                solution = self.solutionDFS(cell, visited, end)
+                if solution != None:
+                    return solution
+                        
         return None

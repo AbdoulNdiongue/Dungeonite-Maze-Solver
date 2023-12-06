@@ -4,14 +4,22 @@ from player import *
 from room import *
 from PIL import Image
 
-def onAppStart(app):   
+
+def onAppStart(app):
+    app.startTimer = 60
+    app.timer = app.startTimer
+    app.stepsPerSecond = 60
+    app.fastestTime = 60
+    restart(app,app.startTimer)
+
+def restart(app,time):
     app.mode = 'spawn'
     app.room = Room(SPAWN_ROOM)
     app.keys = set()
     app.onStepCounter = 0
-    app.timer = 59
+    app.timer = time
     app.endOpacity = 0
-    app.stepsPerSecond = 60
+    
     # Create the Images
     app.playerImg = Image.open("graphics/player/down_idle/idle_down.png")
     app.obstacleImg = Image.open("graphics/objects/09.png")
@@ -30,6 +38,10 @@ def onAppStart(app):
 
 def onKeyPress(app,key):
     app.player.move(key)
+    if app.mode == 'end' and key == 'space':
+        app.startTimer = app.startTimer//4*3
+        app.timer = app.startTimer
+        restart(app,app.timer)
     
 def onKeyRelease(app,key):
     app.player.stopMove(key)
@@ -37,15 +49,18 @@ def onKeyRelease(app,key):
 def onStep(app):
     app.onStepCounter += 1
     app.player.step(app.room.obstaclePositions)
-    if app.onStepCounter % 60 == 0:
+    if app.onStepCounter % 60 == 0 and app.mode != 'end':
         app.timer -= 1
-    if app.mode == 'end':
+    if app.mode == 'end' and app.endOpacity < 100:
         app.endOpacity +=1
-    if app.timer <= 0:
+        if app.timer <= app.fastestTime:
+            app.fastestTime = app.startTimer - app.timer
+    if app.timer <= 0 and app.endOpacity < 100:
         app.endOpacity +=1
     
+
 def redrawAll(app):
-    if app.timer > 0:
+    if app.timer > 0 and app.mode != 'end':
         drawImage(CMUImage(app.mapImg),0,0)
         app.room.draw(app.obstacleImg)
         drawRect(0,0,250,150,opacity = 50)
@@ -54,10 +69,21 @@ def redrawAll(app):
         drawLabel('Time Remaining:',125,600, fill = 'white', size = 32)
         drawLabel(f'{app.timer}s', 125,640, size = 35, fill = 'white')
         app.player.draw(app.playerImg)
-        if app.mode == 'end':
-            drawRect(0,0,WIDTH,HEIGHT,opacity = app.endOpacity)
-    else:
+
+    elif app.mode == 'end':
+
         drawRect(0,0,WIDTH,HEIGHT,opacity = app.endOpacity)
+        drawLabel("You Win!",WIDTH/2,HEIGHT/2-75, fill = 'white', size = 50)
+        drawLabel(f"Dungeon completed with {app.timer}s to spare",WIDTH/2,HEIGHT/2, fill = 'white', size = 40)
+        drawLabel(f"Press 'space' to play with increased difficulty({app.startTimer//4*3}s)",WIDTH/2,HEIGHT/2+75, fill = 'white', size = 40)
+    
+    elif app.timer <= 0:
+        drawRect(0,0,WIDTH,HEIGHT,opacity = app.endOpacity)
+        drawLabel('GAME OVER',WIDTH/2,HEIGHT/2-75, fill = 'white', size = 60)
+        drawLabel('Fastest Completion Time:',WIDTH/2,HEIGHT/2, fill = 'white', size = 50)
+        drawLabel(f'{app.fastestTime}s',WIDTH/2,HEIGHT/2+75, fill = 'white', size = 50)
+
+    
     
 
 def main():
