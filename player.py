@@ -91,7 +91,7 @@ class Player():
 
                 if abs(app.room.keyX - app.playerPosition[0]) <= self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) <= self.playerSpeed:
                     app.keys.add('key1')
-                    app.room.showKey == False
+                    app.room.showKey = False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[1]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
@@ -117,7 +117,7 @@ class Player():
 
                 if abs(app.room.keyX - app.playerPosition[0]) <= self.playerSpeed and abs(app.room.keyY - app.playerPosition[1]) <= self.playerSpeed:
                     app.keys.add('key2')
-                    app.room.showKey == False
+                    app.room.showKey = False
 
                 if abs(app.room.puzzleThreshold1 - app.playerPosition[0]) < self.playerSpeed:
                     app.room = Room(SPAWN_ROOM)
@@ -133,7 +133,11 @@ class Player():
                 
             
     def draw(self, playerImg):
-        if app.mode == 'puzzle1' or app.mode == 'puzzle2':
+        if app.mode == 'puzzle1':
+            if app.room.showKey:
+                drawImage(CMUImage(app.keyImg),app.room.keyX,app.room.keyY)
+       
+        elif app.mode == 'puzzle2':
             if app.room.showKey:
                 drawImage(CMUImage(app.keyImg),app.room.keyX,app.room.keyY)
 

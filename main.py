@@ -9,7 +9,9 @@ def onAppStart(app):
     app.room = Room(SPAWN_ROOM)
     app.keys = set()
     app.onStepCounter = 0
-    app.timer = 179
+    app.timer = 59
+    app.endOpacity = 0
+    app.stepsPerSecond = 60
     # Create the Images
     app.playerImg = Image.open("graphics/player/down_idle/idle_down.png")
     app.obstacleImg = Image.open("graphics/objects/09.png")
@@ -37,9 +39,11 @@ def onStep(app):
     app.player.step(app.room.obstaclePositions)
     if app.onStepCounter % 60 == 0:
         app.timer -= 1
+    if app.mode == 'end':
+        app.endOpacity +=1
+    if app.timer <= 0:
+        app.endOpacity +=1
     
-    #print(app.mode, app.keys)
-
 def redrawAll(app):
     if app.timer > 0:
         drawImage(CMUImage(app.mapImg),0,0)
@@ -50,8 +54,10 @@ def redrawAll(app):
         drawLabel('Time Remaining:',125,600, fill = 'white', size = 32)
         drawLabel(f'{app.timer}s', 125,640, size = 35, fill = 'white')
         app.player.draw(app.playerImg)
+        if app.mode == 'end':
+            drawRect(0,0,WIDTH,HEIGHT,opacity = app.endOpacity)
     else:
-        drawRect(0,0,WIDTH,HEIGHT,opacity = 100)
+        drawRect(0,0,WIDTH,HEIGHT,opacity = app.endOpacity)
     
 
 def main():

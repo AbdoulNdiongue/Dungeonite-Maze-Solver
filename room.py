@@ -137,7 +137,7 @@ class Room():
                 #print(currCell,cell)
                 if x1-x != 0:
                     if y1+1 < len(self.layout[0])-2 and y1-1 > 0:
-                        print(x1,y1)
+                        #print(x1,y1)
                         if (x1,y1+1) not in visited:
                             self.layout[x1][y1+1] = 'x'
                         if (x1,y1-1) not in visited:
