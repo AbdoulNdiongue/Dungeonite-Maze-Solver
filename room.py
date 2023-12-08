@@ -21,6 +21,7 @@ class Room():
             self.createMaze(currCell, visited)
             visited = set()
             self.hasSolution = self.solutionDFS(currCell, visited, end)
+            self.hasSolution or self.solutionDFS(end, visited, currCell)
 
             while self.hasSolution == False: 
                 visited = set()
@@ -37,6 +38,7 @@ class Room():
             self.createMaze(currCell, visited)
             visited = set()
             self.hasSolution = self.solutionDFS(currCell, visited, end)
+            self.hasSolution or self.solutionDFS(end, visited, currCell)
             
             while self.hasSolution == False: 
                 visited = set()
